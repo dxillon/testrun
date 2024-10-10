@@ -538,28 +538,7 @@
             alert("Please fill in the form correctly before proceeding.");
         }
     });
-    document.getElementById('paymentForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                message: document.getElementById('message').value,
-            };
 
-            const response = await fetch('submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (response.ok) {
-                alert('Form submitted successfully!');
-            } else {
-                alert('Failed to submit the form.');
-            }
-        });
     </script>
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
