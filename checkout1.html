@@ -1,156 +1,568 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - Basic Plan</title>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <title>Payment Checkout</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+        integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            outline: none;
+            text-decoration: none;
+            list-style: none;
+            box-sizing: border-box;
         }
-        .checkout-container {
-            max-width: 600px;
-            margin: 50px auto;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+        .clearfix:after {
+            content: " ";
+            /* Older browser do not support empty content */
+            visibility: hidden;
+            display: block;
+            height: 0;
+            clear: both;
         }
-        h1 {
-            text-align: center;
-            color: #333;
+
+        body {
+            font-family: poppins, arial, sans-serif;
+            background-color: whitesmoke;
         }
-        .plan-details {
-            margin-bottom: 20px;
-            text-align: center;
+
+        .modal {
+            width: 96%;
+            max-width: 1000px;
+            height: 550px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 3px;
+            overflow: hidden;
+            background-color: white;
+            box-shadow: 5px 5px 30px rgba(0, 0, 0, .3);
+
+            .modal-product {
+                width: 40%;
+                height: 100%;
+                float: left;
+                position: relative;
+
+                .product {
+                    width: 100%;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    z-index: 2;
+
+                    .product-slideshow {
+                        max-width: 350px;
+                        margin: 0 auto;
+                        position: relative;
+
+                        .productSlides {
+                            display: none;
+                        }
+
+                        .dot {
+                            cursor: pointer;
+                            height: 10px;
+                            width: 10px;
+                            margin: 0 5px;
+                            position: relative;
+                            top: -36px;
+                            background-color: rgba(255, 255, 255, .5);
+                            border-radius: 50%;
+                            display: inline-block;
+                            transition: background-color 0.6s ease;
+                            box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+
+                            &.active {
+                                background-color: rgba(255, 255, 255, 1);
+                                box-shadow: 0 0 7px rgba(0, 0, 0, .6);
+                            }
+
+                            &:hover {
+                                background-color: rgba(255, 255, 255, .8);
+                            }
+
+                            /* Fading animation */
+                            .fade {
+                                -webkit-animation-name: fade;
+                                -webkit-animation-duration: 1.5s;
+                                animation-name: fade;
+                                animation-duration: 1.5s;
+                            }
+
+                            @-webkit-keyframes fade {
+                                from {
+                                    opacity: .4
+                                }
+
+                                to {
+                                    opacity: 1
+                                }
+                            }
+
+                            @keyframes fade {
+                                from {
+                                    opacity: .4
+                                }
+
+                                to {
+                                    opacity: 1
+                                }
+                            }
+                        }
+                    }
+
+                    .product-name {
+                        color: #111;
+                        font-size: 1.7rem;
+                        font-weight: 300;
+                        line-height: 2rem;
+                        text-align: center;
+                        margin-top: -22px;
+                    }
+
+                    .product-code-name {
+                        font-size: .8rem;
+                        font-weight: 300;
+                        text-align: center;
+                        margin: 8px auto 5px;
+                    }
+
+                    .product-price {
+                        font-size: 1.5rem;
+                        font-weight: 300;
+                        letter-spacing: .18rem;
+                        text-align: center;
+                    }
+                }
+
+                .round-shape {
+                    width: 125%;
+                    height: 150%;
+                    position: absolute;
+                    top: 50%;
+                    left: 38%;
+                    transform: translate(-50%, -50%);
+                    border-radius: 50%;
+                    background-color: #cdb196;
+                    box-shadow: 0 0 25px rgba(0, 0, 0, .3);
+                    z-index: 1;
+                }
+            }
+
+            .modal-info {
+                width: 60%;
+                height: 100%;
+                float: right;
+                position: relative;
+
+                .info {
+                    width: 90%;
+                    height: 85%;
+                    position: absolute;
+                    top: 50%;
+                    left: 5%;
+                    transform: translate(0%, -50%);
+
+                    h2 {
+                        font-size: 2.25rem;
+                        margin-left: 1rem;
+                    }
+
+                    form {
+                        .form-list {
+                            margin-top: 1.5rem;
+                            margin-left: 3.5rem;
+
+                            .form-list-row {
+                                margin: 1rem 0;
+
+                                label {
+                                    font-size: 1rem;
+                                }
+
+                                input {
+                                    width: 70%;
+                                    font-size: 1rem;
+                                    padding: .4rem 0;
+                                    border: none;
+                                    display: inline-block;
+                                    border-bottom: solid 2px #999;
+                                    background-color: transparent;
+                                    transition: all .3s ease;
+
+                                    &:focus {
+                                        border-color: #cdb196;
+                                    }
+                                }
+
+                                .user {
+                                    .fa-user {
+                                        color: #070707;
+                                        font-size: 1rem;
+                                    }
+
+                                    input {
+                                        position: relative;
+                                        left: -16px;
+                                        padding-left: 30px;
+                                    }
+                                }
+
+                                .number {
+
+                                    .fa-credit-card {
+                                        color: #999;
+                                        font-size: 1rem;
+                                    }
+
+                                    input {
+                                        position: relative;
+                                        left: -20px;
+                                        padding-left: 30px;
+                                    }
+                                }
+
+                                .date {
+                                    float: left;
+
+                                    input {
+                                        width: 60px;
+                                        text-align: center;
+                                    }
+
+                                    .year {
+                                        margin-left: 1.5rem;
+                                    }
+                                }
+
+                                .cvc {
+                                    float: left;
+                                    margin-left: 6rem;
+                                    text-align: center;
+
+                                    .fa-question-circle {
+                                        color: dodgerblue;
+                                        display: inline-block;
+                                        position: relative;
+                                        left: .75rem;
+                                    }
+
+                                    input {
+                                        width: 70px;
+                                        text-align: center;
+                                    }
+                                }
+
+                                .checkbox {
+                                    margin-top: 2rem;
+
+                                    input {
+                                        width: auto;
+                                    }
+
+                                    span {
+                                        font-size: .8rem;
+                                    }
+                                }
+                            }
+                        }
+
+                        button {
+                            color: white;
+                            font-size: 1rem;
+                            margin-left: 1rem;
+                            padding: 1rem 2.5rem;
+                            position: absolute;
+                            bottom: 0;
+                            border: none;
+                            border-radius: 3px;
+                            background-color: #cdb196;
+                            box-shadow: 0 0 20px rgba(0, 0, 0, .25);
+                            transition: all .3s ease;
+
+                            &:hover {
+                                background-color: #b59779;
+                            }
+                        }
+                    }
+                }
+            }
         }
-        .plan-details h2 {
-            font-size: 24px;
-            color: #555;
-        }
-        .price {
-            font-size: 20px;
-            color: #007bff;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            margin-bottom: 10px;
-            font-size: 14px;
-            color: #333;
-        }
-        input[type="text"], input[type="email"], input[type="number"], input[type="tel"] {
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            width: 100%;
-        }
-        button {
-            padding: 15px;
-            background-color: #28a745;
-            color: white;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .terms {
-            font-size: 12px;
-            text-align: center;
-            margin-top: 10px;
-            color: #666;
-        }
+
+        /* Add your custom styles here */
     </style>
 </head>
+
 <body>
+    <div class="modal clearfix">
+        <div class="modal-product">
+            <div class="product">
+                <!-- Slideshow container -->
+                <div class="product-slideshow">
 
-<div class="checkout-container">
-    <h1>Checkout - Basic Plan</h1>
+                    <!-- Full-width images with number and caption text -->
+                    <div class="productSlides fade">
+                        <img src="image/1.png" style="width:90% ;margin-left: 10px;">
+                    </div>
 
-    <div class="plan-details">
-        <h2>Basic Plan</h2>
-        <p id="amountDisplay">Amount: ₹0</p> <!-- Default amount -->
+                    <div class="productSlides fade">
+                        <img src="image/2.png" style="  width:90% ;margin-left: 10px;">
+                    </div>
+
+                    <div class="productSlides fade">
+                        <img src="image/3.png" style="width:90% ;margin-left: 10px;">
+                    </div>
+
+                    <div class="productSlides fade">
+                        <img src="image/4.png" style="width:90% ;margin-left: 10px;"">
+                    </div>
+
+                    <div class=" productSlides fade">
+                        <img src="image/5.png" style="width:90% ;margin-left: 10px;">
+                    </div>
+
+                    <br>
+
+                    <!-- The dots/circles -->
+                    <div style="text-align:center">
+                        <span class="dot" onclick="currentSlide(1)"></span>
+                        <span class="dot" onclick="currentSlide(2)"></span>
+                        <span class="dot" onclick="currentSlide(3)"></span>
+                        <span class="dot" onclick="currentSlide(4)"></span>
+                        <span class="dot" onclick="currentSlide(5)"></span>
+                    </div>
+
+                </div> <!-- Product slideshow and details here -->
+                <h1 style="font: 1.5em sans-serif;" class="product-name">
+                    <b>cadence shopify theme</b>
+                </h1><br>
+                <h1 style="font-size:medium ; text-align:center">Checkout - <span id="planName">No Plan Selected</span>
+                </h1>
+
+                <div class="product-price">
+                    <p id="amountDisplay">Amount: ₹0</p>
+                </div>
+            </div>
+            <div class="round-shape"></div>
+        </div>
+        <div class="modal-info">
+            <div class="info">
+                <h2>Payment Information</h2>
+                <form id="paymentForm"action="form_handler.php" method="POST">
+                    <ul class="form-list">
+                        <li class="form-list-row">
+                            <label for="name">Name</label><br>
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="name" name="name">
+                            <span id="nameError" style="color:red; display:none;">Name is required</span>
+                        </li>
+                        <li class="form-list-row">
+                            <label for="phone">Phone Number</label><br>
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" id="phone" name="phone" maxlength="10">
+                            <span id="phoneError" style="color:red; display:none;">Invalid phone number</span>
+                        </li>
+                        <li class="form-list-row">
+                            <label for="email">Email</label><br>
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="email" name="email">
+                            <span id="emailError" style="color:red; display:none;">Invalid email</span>
+                        </li>
+                        <button type="button" id="pay-button">Pay Now</button>
+                        <div class="terms">
+                            By completing your purchase, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+                        </div>
+                    </ul>
+                </form>
+            </div>
+        </div>
     </div>
 
-    <form id="checkout-form">
-        <label for="name">Full Name</label>
-        <input type="text" id="name" name="name" placeholder="John Doe" required>
-
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="john@example.com" required>
-
-        <label for="address">Billing Address</label>
-        <input type="text" id="address" name="address" placeholder="123 Main St, City" required>
-
-        <!-- Razorpay payment button -->
-        <button type="button" id="pay-button">Complete Purchase</button>
-    </form>
-
-    <div class="terms">
-        By completing your purchase, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
-    </div>
-</div>
-
-<script>
-    // Function to get query parameters from the URL
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
-
-    // Get the amount from the URL
-    const amount = getQueryParam('amount');
-    const amountInRupees = amount ? parseInt(amount) : 0;
-
-    // Display the amount on the checkout page
-    document.getElementById('amountDisplay').textContent = "Amount: ₹" + amountInRupees;
-
-    // Razorpay payment options
-    document.getElementById('pay-button').onclick = function(e) {
-        if (amountInRupees <= 0) {
-            alert('Invalid amount. Please select a valid plan.');
-            return;
+    <script>
+        var slideIndex = 1;
+        showSlides(slideIndex);
+        // Next/previous controls
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+        // Thumbnail image controls
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+        function showSlides(n) {
+            var i;
+            var slides = document.getElementsByClassName("productSlides");
+            var dots = document.getElementsByClassName("dot");
+            if (n > slides.length) {
+                slideIndex = 1
+            }
+            if (n < 1) {
+                slideIndex = slides.length
+            }
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            slides[slideIndex - 1].style.display = "block";
+            dots[slideIndex - 1].className += " active";
+        }
+        // Function to get query parameters from the URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
         }
 
-        var options = {
-            "key": "rzp_live_UtoR65oQuegqTL", // Enter the Key ID generated from the Dashboard
-            "amount": amountInRupees * 100, // Convert rupees to paise
-            "currency": "INR",
-            "name": "Your Service Name",
-            "description": "Payment for your selected plan",
-            "image": "https://example.com/logo.png", // Optional, replace with your logo
-            "handler": function (response) {
-                alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
-                // Optionally redirect to a success page or handle the response
-            },
-            "prefill": {
-                "name": document.getElementById('name').value,
-                "email": document.getElementById('email').value,
-                "contact": "" // Optionally get from user input
-            },
-            "notes": {
-                "address": document.getElementById('address').value // Use the address from the form
-            },
-            "theme": {
-                "color": "#007bff"
-            }
-        };
-        
-        var rzp = new Razorpay(options);
-        rzp.open();
-        e.preventDefault();
-    };
-</script>
+        // Get the amount and plan from the URL
+        const amount = getQueryParam('amount');
+        const plan = getQueryParam('plan');
+        const amountInRupees = amount ? parseInt(amount) : 0;
 
+        // Display the amount and plan name
+        document.getElementById('amountDisplay').textContent = "Amount: ₹" + amountInRupees;
+        document.getElementById('planName').textContent = plan ? plan : "No Plan Selected";
+
+        // Form validation
+        function validateForm() {
+            let isValid = true;
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+
+            // Name validation
+            if (name.trim() === '') {
+                document.getElementById('nameError').style.display = 'inline';
+                isValid = false;
+            } else {
+                document.getElementById('nameError').style.display = 'none';
+            }
+
+            // Phone number validation
+            if (phone.trim() === '' || phone.length !== 10 || isNaN(phone)) {
+                document.getElementById('phoneError').style.display = 'inline';
+                isValid = false;
+            } else {
+                document.getElementById('phoneError').style.display = 'none';
+            }
+
+            // Email validation
+            if (email.trim() === '' || !email.includes('@')) {
+                document.getElementById('emailError').style.display = 'inline';
+                isValid = false;
+            } else {
+                document.getElementById('emailError').style.display = 'none';
+            }
+
+            return isValid;
+        }
+
+        // Payment button click handler
+        document.getElementById('pay-button').onclick = function (e) {
+            e.preventDefault();
+
+            // Validate the form before proceeding
+            if (!validateForm()) {
+                return;
+            }
+
+            // Proceed with Razorpay payment integration (add your Razorpay key and logic)
+            var options = {
+                "key": "rzp_live_UtoR65oQuegqTL", // Replace with your Razorpay key
+                "amount": amountInRupees * 100, // Amount in paise
+                "currency": "INR",
+                "name": "Your Business Name",
+                "description": "Test Transaction",
+                "handler": function (response) {
+                    alert("Payment successful! Razorpay ID: " + response.razorpay_payment_id);
+                },
+                "prefill": {
+                    "name": document.getElementById('name').value,
+                    "email": document.getElementById('email').value,
+                    "contact": document.getElementById('phone').value
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        }
+        document.getElementById("pay-button").addEventListener("click", function() {
+        // Get form field values
+        var name = document.getElementById("name").value.trim();
+        var phone = document.getElementById("phone").value.trim();
+        var email = document.getElementById("email").value.trim();
+
+        // Validation flags
+        var isValid = true;
+
+        // Name validation
+        if (name === "") {
+            document.getElementById("nameError").style.display = "inline";
+            isValid = false;
+        } else {
+            document.getElementById("nameError").style.display = "none";
+        }
+
+        // Phone number validation (should be 10 digits)
+        var phonePattern = /^\d{10}$/;
+        if (!phonePattern.test(phone)) {
+            document.getElementById("phoneError").style.display = "inline";
+            isValid = false;
+        } else {
+            document.getElementById("phoneError").style.display = "none";
+        }
+
+        // Email validation (basic email pattern check)
+        var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        if (!emailPattern.test(email)) {
+            document.getElementById("emailError").style.display = "inline";
+            isValid = false;
+        } else {
+            document.getElementById("emailError").style.display = "none";
+        }
+
+        // If form is valid, submit it
+        if (isValid) {
+            document.getElementById("paymentForm").submit();
+        } else {
+            alert("Please fill in the form correctly before proceeding.");
+        }
+    });
+    document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+            };
+
+            const response = await fetch('submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                alert('Form submitted successfully!');
+            } else {
+                alert('Failed to submit the form.');
+            }
+        });
+    </script>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </body>
+
 </html>
